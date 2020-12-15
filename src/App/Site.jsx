@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useIngredients } from "../hooks/ingredients";
+import { useRecipes } from "../hooks/recipes";
 import { Ingredients } from "./Ingredients/Ingredients";
+import { RecipeDetail } from "./Recipes/RecipeDetail";
 import { Recipes } from './Recipes/Recipes'
 
 export default function Site() {
@@ -13,25 +15,36 @@ export default function Site() {
     updateIngredient
   } = useIngredients()
 
+  const {
+    recipes,
+    recipe,
+    fetchRecipes,
+    fetchRecipe
+  } = useRecipes();
+
+
   let content = null;
   if (page === 'ingredients') {
       content = <Ingredients ingredients={ingredients} onDelete={deleteIngredient} onUpdate={updateIngredient} onAdd={addIngredient}/>
   } else if (page === 'recipes') {
-      content = <Recipes />
+      content = <Recipes recipes={recipes} onClick={fetchRecipe}/>
   }
 
   useEffect(function () {
     if (page === 'ingredients') {
       fetchIngredients()
     } else if (page === 'recipes') {
-      // fetchRecipes()
+      fetchRecipes()
     }
-  }, [page, fetchIngredients])
+  }, [page, fetchIngredients, fetchRecipes])
 
 
   return <>
     <NavBar currentPage={page} onClick={setPage}/>
-    {content}
+    <div className="container">
+      {recipe ? <RecipeDetail recipe={recipe} /> : null}
+      {content}
+    </div>    
   </>;
 }
 
