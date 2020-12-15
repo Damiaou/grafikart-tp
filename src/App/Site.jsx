@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useIngredients } from "../hooks/ingredients";
-import { Ingredients } from "../Ingredients/Ingredients";
+import { Ingredients } from "./Ingredients/Ingredients";
+import { Recipes } from './Recipes/Recipes'
 
 export default function Site() {
   const [page, setPage] = useState("recipes");
@@ -15,13 +16,17 @@ export default function Site() {
   let content = null;
   if (page === 'ingredients') {
       content = <Ingredients ingredients={ingredients} onDelete={deleteIngredient} onUpdate={updateIngredient} onAdd={addIngredient}/>
+  } else if (page === 'recipes') {
+      content = <Recipes />
   }
 
   useEffect(function () {
     if (page === 'ingredients') {
       fetchIngredients()
+    } else if (page === 'recipes') {
+      // fetchRecipes()
     }
-  }, [page])
+  }, [page, fetchIngredients])
 
 
   return <>

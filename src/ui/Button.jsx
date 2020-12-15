@@ -4,7 +4,7 @@ import { Loader } from "./Loader";
 export function Button({ children, type = "primary", loading = false, ...props }) {
     
   let className = `btn btn-${type}`;
-  className = type === 'submit' ? 'btn btn-primary' : className;
+  className = type === 'submit' ? 'btn btn-primary' : className
   let htmlType = type === "submit" ? type : null;
   return (
       

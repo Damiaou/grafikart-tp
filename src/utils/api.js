@@ -12,12 +12,12 @@ export class ApiError {
  * @param {string} endpoint
  * @param {object} options
  */
-export async function apiFetch(endpoint, options = {}) {
+export async function apiFetch(endpoint, options = {}, headers = {}) {
   const response = await fetch("http://localhost:3333/" + endpoint, {
     credentials: "include",
     headers: {
       Accept: "application/json",
-      'Content-Type': 'application/json',
+      ...headers
     },
     mode: 'cors',
     ...options,
