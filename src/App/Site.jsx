@@ -19,7 +19,8 @@ export default function Site() {
     recipes,
     recipe,
     fetchRecipes,
-    fetchRecipe
+    fetchRecipe,
+    unselectRecipe
   } = useRecipes();
 
 
@@ -42,7 +43,7 @@ export default function Site() {
   return <>
     <NavBar currentPage={page} onClick={setPage}/>
     <div className="container">
-      {recipe ? <RecipeDetail recipe={recipe} /> : null}
+      {recipe ? <RecipeDetail recipe={recipe} onClose={unselectRecipe}/> : null}
       {content}
     </div>    
   </>;
