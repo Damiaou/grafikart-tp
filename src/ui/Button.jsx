@@ -6,10 +6,11 @@ export function Button({
   children,
   type = "primary",
   loading = false,
+  className,
   ...props
 }) {
-  let className = `btn btn-${type}`;
-  className = type === "submit" ? "btn btn-primary" : className;
+  className += ` btn btn-${type}`;
+  className += type === "submit" ? "btn btn-primary" : className;
   let htmlType = type === "submit" ? type : null;
   return (
     <button className={className} type={htmlType} {...props} disabled={loading}>

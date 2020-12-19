@@ -1,4 +1,4 @@
-import { useCallback, useReducer } from "react";
+import { useCallback, useReducer, useState } from "react";
 import { apiFetch } from "../utils/api";
 
 function reducer(state, action) {
@@ -19,7 +19,7 @@ function reducer(state, action) {
           r.id === action.payload.id ? action.payload : r
         ),
       };
-      case "UNSELECT_RECIPE":
+    case "UNSELECT_RECIPE":
       return {
         ...state,
         recipeId: null
@@ -28,6 +28,11 @@ function reducer(state, action) {
       return {
         ...state,
         recipeId: action.payload.id,
+      };
+    case "ADD_RECIPE":
+      return {
+        ...state,
+        recipes: [action.payload, ...state.recipes]
       };
     default:
       console.log("Action non géré -> " + action.type);
@@ -40,7 +45,6 @@ export function useRecipes() {
     recipes: null,
     recipeId: null,
   });
-
   const recipe = state.recipes
     ? state.recipes.find(r => r.id === state.recipeId)
     : null;
@@ -66,6 +70,16 @@ export function useRecipes() {
     }, []),
     unselectRecipe: async function () {
       dispatch({type: 'UNSELECT_RECIPE', payload: null})
-    }
+    },
+    createRecipe: useCallback(async function (data) {
+      const recipe = await apiFetch('recipes', {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type' : 'application/json'
+          }
+      });
+      dispatch({type: 'ADD_RECIPE', payload: recipe});
+  }, [])
   };
 }
