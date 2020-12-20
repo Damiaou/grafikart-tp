@@ -1,4 +1,4 @@
-import { useCallback, useReducer, useState } from "react";
+import { useCallback, useReducer } from "react";
 import { apiFetch } from "../utils/api";
 
 function reducer(state, action) {
@@ -29,11 +29,17 @@ function reducer(state, action) {
         ...state,
         recipeId: action.payload.id,
       };
+    case 'DELETE_RECIPE':
+      return {
+        ...state,
+        recipes: state.recipes.filter(i => i !== action.payload)
+      }
     case "ADD_RECIPE":
       return {
         ...state,
         recipes: [action.payload, ...state.recipes]
       };
+    
     default:
       console.log("Action non géré -> " + action.type);
   }
@@ -80,6 +86,22 @@ export function useRecipes() {
           }
       });
       dispatch({type: 'ADD_RECIPE', payload: recipe});
-  }, [])
+    }, []),
+    updateRecipe: useCallback(async function (recipe, data) {
+      recipe = await apiFetch(`recipes/${recipe.id}`, {
+          method: 'PUT',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type' : 'application/json'
+          }
+      });
+      dispatch({type: 'ADD_RECIPE', payload: recipe});
+    }, []),
+    deleteRecipe: useCallback(async function (recipe) {
+      await apiFetch(`recipes/${recipe.id}`, {
+          method: 'DELETE',
+      });
+      dispatch({type: 'DELETE_RECIPE', payload: recipe});
+    }, [])
   };
 }

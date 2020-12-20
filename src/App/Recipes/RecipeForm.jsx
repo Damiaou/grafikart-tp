@@ -3,10 +3,29 @@ import PropTypes from 'prop-types'
 import { Field } from '../../ui/Field'
 import { Loader } from '../../ui/Loader'
 import { Button } from '../../ui/Button';
-import { Ok, Trash } from '../../ui/Icon';
+import { Trash } from '../../ui/Icon';
 import { ApiError } from '../../utils/api';
 
+
+
 export function CreateRecipeForm({ingredients, onSubmit}) {
+    return <RecipeForm ingredients={ingredients} onSubmit={onSubmit} button='Create'/>
+}
+
+
+
+export function EditRecipeForm({ingredients, onSubmit, recipe}) {
+    return (
+        <RecipeForm ingredients={ingredients} onSubmit={onSubmit} recipe={recipe} button='Edit' />
+    )
+}
+
+EditRecipeForm.propTypes = {
+    recipe: PropTypes.object.isRequired,
+    ingredients: PropTypes.array
+}
+
+export function RecipeForm({ingredients, onSubmit, recipe = {}, button}) {
 
     
     const {
@@ -15,7 +34,7 @@ export function CreateRecipeForm({ingredients, onSubmit}) {
         updateQuantity,
         deleteIngredient,
         resetIngredients
-    } = useIngredients();
+    } = useIngredients(recipe.ingredients);
 
     const [errors, setErrors] = useState({});
 
@@ -48,27 +67,27 @@ export function CreateRecipeForm({ingredients, onSubmit}) {
     return (
         <form className='row' onSubmit={handleSubmit}>
             <div className="col-md-6">
-                <Field error={errors.title} required name='title'>Titre</Field>
-                <Field error={errors.short} required name='short' type='text-area'>Short description</Field>
-                <Field error={errors.content} required name='content' type='text-area'>Content</Field>
+                <Field defaultValue={recipe.title} error={errors.title} required name='title'>Titre</Field>
+                <Field defaultValue={recipe.short} error={errors.short} required name='short' type='text-area'>Short description</Field>
+                <Field defaultValue={recipe.content} error={errors.content} required name='content' type='text-area'>Content</Field>
             </div>
             <div className="col-md-6">
                 <h5>Ingrédients</h5>
                 {recipeIngredients.map(i => <IngredientRow ingredient={i} key={i.id} onChange={updateQuantity} onDelete={deleteIngredient}/>)}
                 {ingredients ? <SelectIngredients ingredients={filteredIngredients} onChange={addIngredient}/>: <Loader />}
             </div>
-            <Button type='submit' >Save</Button>
+            <Button className='pull-right mt-3' type='submit' >{button}</Button>
         </form>
     )
 }
 
-CreateRecipeForm.propTypes = {
+RecipeForm.propTypes = {
     ingredients: PropTypes.array,
 
 }
 
-function useIngredients () {
-    const [ingredients, setIngredients] = useState([]);
+function useIngredients (initial) {
+    const [ingredients, setIngredients] = useState(initial || {});
 
     return {
         ingredients: ingredients,
